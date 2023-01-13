@@ -27,6 +27,7 @@ public class MoviesService {
      */
     // TODO -- ensure that mMovies is autowired with the appropriate
     // @Bean factory method.
+    @Autowired
     List<Movie> mMovies;
 
     /**
@@ -35,7 +36,7 @@ public class MoviesService {
     public List<Movie> getMovies() {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mMovies;
     }
 
     /**
@@ -52,7 +53,10 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mMovies.stream()
+                .filter(movie -> movie.id().toLowerCase()
+                        .contains(query.toLowerCase()))
+                .toList();
     }
 
     /**
@@ -70,6 +74,14 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mMovies.stream()
+                .filter(movie -> anyMatch(movie.id(), queries))
+                .toList();
+   }
+
+   private boolean anyMatch(String id, List<String> queries) {
+        return queries.stream()
+                .anyMatch(query -> id.toLowerCase()
+                        .contains(query.toLowerCase()));
    }
 }

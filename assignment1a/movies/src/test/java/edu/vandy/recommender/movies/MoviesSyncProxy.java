@@ -32,14 +32,18 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'null' with the proper
         // code.
-        String url = null;
+        String url = UriComponentsBuilder
+                .fromPath(GET_ALL_MOVIES)
+                .build()
+                .toUriString();
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all movies from the 'movie' microservice.
 
         // TODO -- you fill in here, replacing 'null'
         // with the proper code.
-        List<Movie> movies = null;
+        List<Movie> movies = WebUtils
+                .makeGetRequestList(mMoviesRestTemplate, url, Movie[].class);
 
         if (movies == null)
             throw new IllegalStateException
@@ -61,14 +65,18 @@ public class MoviesSyncProxy {
         // "search" endpoint of the 'movies' microservice.
         // TODO -- you fill in here, replacing 'null'
         // with the proper code.
-        String url = null;
+        String url = UriComponentsBuilder
+                .fromPath(GET_SEARCH + "/" + query)
+                .build()
+                .toUriString();
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
         // microservice.
         // TODO -- you fill in here, replacing 'null'
         // with the proper code.
-        List<Movie> matchingMovies = null;
+        List<Movie> matchingMovies = WebUtils
+                .makeGetRequestList(mMoviesRestTemplate, url, Movie[].class);
 
         if (matchingMovies == null)
             throw new IllegalStateException
@@ -92,14 +100,19 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'null' with
         // the proper code.
-        String url = null;
+        String url = UriComponentsBuilder
+                .fromPath(GET_SEARCHES)
+                .queryParam("queries", WebUtils.list2String(queries))
+                .build()
+                .toUriString();
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
         // microservice.
         // TODO -- you fill in here, replacing 'null'
         // with the proper code.
-        List<Movie> matchingMovies = null;
+        List<Movie> matchingMovies = WebUtils
+                .makeGetRequestList(mMoviesRestTemplate, url, Movie[].class);
 
         if (matchingMovies == null)
             throw new IllegalStateException
