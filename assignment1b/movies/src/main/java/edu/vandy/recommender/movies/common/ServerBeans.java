@@ -26,6 +26,7 @@ public class ServerBeans {
      */
     // TODO -- Add the appropriate annotation to make this factory
     // method a "Bean".
+    @Bean
     public Map<String, List<Double>> movieMap
     // The @Value annotation injects values into fields in
     // Spring-managed beans.
@@ -44,6 +45,7 @@ public class ServerBeans {
      */
     // TODO -- Add the appropriate annotation to make this factory
     // method a "Bean".
+    @Bean
     public List<Movie> movieList
         // The @Value annotation injects values into fields in
         // Spring-managed beans.
@@ -56,6 +58,11 @@ public class ServerBeans {
         // TODO -- You fill in here, replacing 'return null' with the
         // proper code.
 
-        return null;
+        return MovieDatasetReader
+                .loadMovieData(dataset)
+                .entrySet()
+                .stream()
+                .map(m -> new Movie(m.getKey(), m.getValue()))
+                .toList();
     }
 }

@@ -32,14 +32,18 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.
-        String uri = null;
+        String uri = UriComponentsBuilder
+                .fromPath(GET_ALL_MOVIES)
+                .build()
+                .toUriString();
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all movies from the 'movie' microservice.
 
         // TODO -- you fill in here, replacing 'List<Movie> movies =
         // null' with the proper code.
-        List<Movie> movies = null;
+        List<Movie> movies = WebUtils
+                .makeGetRequestList(mMoviesRestTemplate, uri, Movie[].class);
 
         if (movies == null) {
             throw new IllegalStateException
@@ -65,14 +69,18 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.
-        String uri = null;
+        String uri = UriComponentsBuilder
+                .fromPath(GET_SEARCH + "/" + WebUtils.encodeQuery(regex_query))
+                .build()
+                .toUriString();
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
         // microservice.
         // TODO -- you fill in here, replacing 'List<Movie> movies =
         // null' with the proper code.
-        List<Movie> movies = null;
+        List<Movie> movies = WebUtils
+                .makeGetRequestList(mMoviesRestTemplate, uri, Movie[].class);
 
         if (movies == null) {
             throw new IllegalStateException
@@ -99,14 +107,20 @@ public class MoviesSyncProxy {
 
         // TODO -- you fill in here, replacing 'String uri = null'
         // with the proper code.
-        String uri = null;
+        String uri = UriComponentsBuilder
+                .fromPath(GET_SEARCHES)
+                .queryParam("regex_queries", WebUtils.list2String(
+                        WebUtils.encodeQueries(regex_queries)))
+                .build()
+                .toUriString();
 
         // Use WebUtils.makeGetRequestList() and mMoviesRestTemplate
         // to get a List of all matching movies from the 'movie'
         // microservice.
         // TODO -- you fill in here, replacing 'List<Movie> movies =
         // null' with the proper code.
-        List<Movie> movies = null;
+        List<Movie> movies = WebUtils
+                .makeGetRequestList(mMoviesRestTemplate, uri, Movie[].class);
 
         if (movies == null) {
             throw new IllegalStateException
