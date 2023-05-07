@@ -37,7 +37,14 @@ public class DatabaseSyncProxy {
     List<Movie> getMovies(String route) {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.getMovies(route).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -55,7 +62,14 @@ public class DatabaseSyncProxy {
                              String query) {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMovies(route, query).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -73,7 +87,14 @@ public class DatabaseSyncProxy {
                              List<String> queries) {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMovies(route, queries).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -93,7 +114,14 @@ public class DatabaseSyncProxy {
     List<Movie> getMoviesTimed(String route) {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.getMoviesTimed(route).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -114,7 +142,14 @@ public class DatabaseSyncProxy {
                                   String query) {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMoviesTimed(route, query).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -135,7 +170,14 @@ public class DatabaseSyncProxy {
                                   List<String> queries) {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMoviesTimed(route, queries).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 }
 

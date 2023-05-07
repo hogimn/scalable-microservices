@@ -21,6 +21,7 @@ public class Movie
 // Implement an interface that enables two Movie objects to be
 // compared and checked for equality.
 // TODO -- you fill in here
+implements Comparable<Movie>
 {
     /**
      * The movie name.
@@ -46,6 +47,10 @@ public class Movie
      *         specified movie's ID
      */
     // TODO -- you fill in here.
+    @Override
+    public int compareTo(Movie other) {
+        return this.id.compareToIgnoreCase(other.id);
+    }
 
 
     /**
@@ -56,5 +61,15 @@ public class Movie
      * @return true if the objects are equal, false otherwise.
      */
     // TODO -- you fill in here.
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
+            return true;
+
+        if (!(object instanceof Movie))
+            return false;
+
+        return this.id.equals(((Movie) object).id);
+    }
 
 }

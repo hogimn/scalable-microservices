@@ -28,7 +28,14 @@ public class TimerSyncProxy {
     public String getTimings() {
         // TODO -- you fill in here.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mTimerAPI.getTimings(TIMER).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new IOException("Request failed: " + response.code());
+            }
+        }).get();
     }
 }
 

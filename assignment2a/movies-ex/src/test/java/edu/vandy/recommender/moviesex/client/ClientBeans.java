@@ -19,6 +19,7 @@ public class ClientBeans {
      */
     // TODO -- Add the appropriate annotation to make this factory
     // method a "Bean".
+    @Bean
     public RestTemplate getMoviesRestTemplate() {
         var restTemplate = new RestTemplate();
 

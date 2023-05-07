@@ -31,6 +31,7 @@ public interface DatabaseRepository
      *         contain the {@code query} (ignoring case)
      */
     // TODO -- you fill in here.
+    List<Movie> findByIdContainingIgnoreCase(String query);
 
     /**
      * @return A {@link List} of all {@link Movie} objects in
@@ -38,4 +39,5 @@ public interface DatabaseRepository
      *         (movie title)
      */
     // TODO -- you fill in here.
+    List<Movie> findAllByOrderByIdAsc();
 }

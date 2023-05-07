@@ -44,6 +44,8 @@ public class ClientBeans {
         // the API Gateway URL.
 
         // TODO -- you fill in here.
+        restTemplate.setUriTemplateHandler(
+                new DefaultUriBuilderFactory(GATEWAY_BASE_URL));
 
         // Return restTemplate.
         return restTemplate;
@@ -59,7 +61,11 @@ public class ClientBeans {
     @Bean
     public DatabaseAPI getDatabaseAPI() {
         // TODO -- you fill in here.
-        return null;
+        return new Retrofit.Builder()
+                .baseUrl(GATEWAY_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(DatabaseAPI.class);
     }
 
     /**
@@ -72,7 +78,11 @@ public class ClientBeans {
     @Bean
     public TimerAPI getTimingAPI() {
         // TODO -- you fill in here.
-        return null;
+        return new Retrofit.Builder()
+                .baseUrl(GATEWAY_BASE_URL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build()
+                .create(TimerAPI.class);
     }
 
     /**
