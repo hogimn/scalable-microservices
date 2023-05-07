@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
@@ -32,6 +33,7 @@ public class MoviesService {
      */
     // TODO -- ensure that mMovies is autowired with the appropriate
     // @Bean factory method.
+    @Autowired
     protected List<Movie> mMovies;
 
     /**
@@ -40,7 +42,7 @@ public class MoviesService {
     public List<Movie> getMovies() {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mMovies;
     }
 
     /**
@@ -58,7 +60,7 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return search(List.of(regexQuery));
     }
 
     /**
@@ -77,31 +79,35 @@ public class MoviesService {
 
         // Convert the 'regexQueries' into a List of Pattern objects.
         // TODO -- you fill in here.
+        List<Pattern> patternList = makePatternList(regexQueries);
 
         try (var scope =
              // Create a new StructuredTaskScope that shuts down on
              // failure.
              // TODO -- You fill in here, replacing
              // (StructuredTaskScope<Object>)null with the proper code.
-             (StructuredTaskScope<Object>)null
+             new StructuredTaskScope.ShutdownOnFailure()
         ) {
             // Call a helper method to concurrently get a List of all
             // Movie objects that match the patternList.
             // TODO -- You fill in here.
+            List<Future<List<Movie>>> results = getMatches(patternList, scope);
 
             // Perform a barrier synchronization that waits for all
             // the tasks to complete.
             // TODO -- you fill in here.
+            scope.join();
 
             // Throw an Exception upon failure of any tasks.
             // TODO -- you fill in here.
+            scope.throwIfFailed();
 
             // Call a helper method that concatenates all matches and
             // returns a List of Movie objects that matched at least
             // one client query.
             // TODO -- you fill in here, replacing 'return null' with
             // the proper code.
-            return null;
+            return concatMatches(results);
         } catch (Exception exception) {
             System.out.println("Exception: " + exception.getMessage());
             throw new RuntimeException(exception);
@@ -131,7 +137,10 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return regexQueries.stream()
+                .map(regexQuery -> URLDecoder.decode(regexQuery, StandardCharsets.UTF_8))
+                .map(regexQuery -> Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE))
+                .toList();
     }
 
     /**
@@ -163,7 +172,9 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return patternList.stream()
+                .map(pattern -> findMatches(pattern, scope))
+                .toList();
     }
 
     /**
@@ -197,7 +208,10 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return scope.fork(() ->
+                mMovies.stream()
+                        .filter(movie -> match(pattern, movie))
+                        .toList());
     }
 
     /**
@@ -219,7 +233,8 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return false' with
         // the proper code.
-        return false;
+        return pattern.matcher(movie.id())
+                .find();
     }
 
     /**
@@ -250,6 +265,9 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return FutureUtils.futures2Stream(results)
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList();
     }
 }

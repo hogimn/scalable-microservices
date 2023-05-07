@@ -1,11 +1,15 @@
 package edu.vandy.recommender.movies.server;
 
 import edu.vandy.recommender.movies.common.model.Movie;
+import edu.vandy.recommender.movies.server.utils.FutureUtils;
 import jdk.incubator.concurrent.StructuredTaskScope;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
 import java.util.concurrent.ExecutionException;
@@ -38,6 +42,7 @@ public class MoviesService {
      */
     // TODO -- ensure that mMovies is autowired with the appropriate
     // @Bean factory method.
+    @Autowired
     protected List<Movie> mMovies;
 
     /**
@@ -46,7 +51,7 @@ public class MoviesService {
     public List<Movie> getMovies() {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mMovies;
     }
 
     /**
@@ -64,31 +69,35 @@ public class MoviesService {
 
         // Convert regexQuery to a Pattern.
         // TODO -- you fill in here.
+        Pattern pattern = makePattern(regexQuery);
 
         try (var scope =
              // Create a new StructuredTaskScope that shuts down on
              // failure.
              // TODO -- You fill in here, replacing
              // (StructuredTaskScope<Object>)null with the proper code.
-             (StructuredTaskScope<Object>)null
+             new StructuredTaskScope.ShutdownOnFailure()
         ) {
             // Call a helper method to concurrently get a List of all
             // Movie objects that match the pattern.
             // TODO -- You fill in here, replacing 'null' with
             // the proper code.
+            List<Future<Movie>> results = getMatchesForPattern(pattern, scope);
 
             // Perform a barrier synchronization that waits for all
             // the tasks to complete.
             // TODO -- you fill in here.
+            scope.join();
 
             // Throw an Exception upon failure of any tasks.
             // TODO -- you fill in here.
+            scope.throwIfFailed();
 
             // Call a helper method that returns a List of Movie
             // objects that matched at least one client query.
             // TODO -- you fill in here, replacing 'return null' with
             // the proper code.
-            return null;
+            return convertMovieMatches(results);
         }
         catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -111,32 +120,36 @@ public class MoviesService {
 
         // Convert the 'regexQueries' into a List of Pattern objects.
         // TODO -- you fill in here.
+        List<Pattern> patternList = makePatterns(regexQueries);
 
         try (var scope =
              // Create a new StructuredTaskScope that shuts down on
              // failure.
              // TODO -- You fill in here, replacing
              // (StructuredTaskScope<Object>)null with the proper code.
-             (StructuredTaskScope<Object>)null
+             new StructuredTaskScope.ShutdownOnFailure()
         ) {
             // Call a helper method to concurrently get a List of all
             // Movie objects that match the patternList.
             // TODO -- You fill in here, replacing 'null' with
             // the proper code.
+            List<Future<Movie>> results = getMatchesForPatterns(patternList, scope);
 
             // Perform a barrier synchronization that waits for all
             // the tasks to complete.
             // TODO -- you fill in here.
+            scope.join();
 
             // Throw an Exception upon failure of any tasks.
             // TODO -- you fill in here.
+            scope.throwIfFailed();
 
             // Call a helper method that concatenates all matches and
             // returns a List of Movie objects that matched at least
             // one client query.
             // TODO -- you fill in here, replacing 'return null' with
             // the proper code.
-            return null;
+            return convertMovieMatches(results);
         }
         catch (Exception exception) {
             System.out.println("Exception: " + exception.getMessage());
@@ -165,7 +178,9 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return regexQueries.stream()
+                .map(this::makePattern)
+                .toList();
     }
 
     /**
@@ -182,7 +197,7 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return Pattern.compile(regexQuery, Pattern.CASE_INSENSITIVE);
     }
 
     /**
@@ -215,7 +230,10 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return mMovies.stream()
+                .map(movie -> scope.fork(() ->
+                        findMatchesForPatternsTask(patternList, movie)))
+                .toList();
     }
 
     /**
@@ -245,7 +263,9 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return mMovies.stream()
+                .map(movie -> findMatchAsync(pattern, movie, scope))
+                .toList();
     }
 
     /**
@@ -270,21 +290,23 @@ public class MoviesService {
              var scope =
                      // TODO -- You fill in here, replacing
                      // (StructuredTaskScope<Object>)null with the proper code.
-                     (StructuredTaskScope<Object>) null
+                     new StructuredTaskScope.ShutdownOnSuccess<Movie>()
         ) {
             // Call a helper method to concurrently determine if any
             // Pattern objects in patternList match the Movie.
             // TODO -- you fill in here.
+            findMatchesAsync(patternList, movie, scope);
 
             // Perform a barrier synchronization that waits for the
             // first successful computation to find a match or all of
             // them to fail to match.
             // TODO -- you fill in here.
+            scope.join();
 
             // Return the result of the concurrent matches.
             // TODO -- you fill in here, replacing 'return null' with
             // the proper code.
-            return null;
+            return scope.result();
         } catch (ExecutionException ex) {
             // If there are no matches scope.result() throws an
             // ExecutionException, so catch it and return null.
@@ -319,6 +341,13 @@ public class MoviesService {
         //    NoSuchMatchException otherwise.
 
         // TODO -- you fill in here.
+        patternList.forEach(pattern ->
+                scope.fork(() -> {
+                    if (match(pattern, movie))
+                        return movie;
+                    else
+                        throw new NoSuchElementException();
+                }));
     }
 
     /**
@@ -350,7 +379,8 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return scope.fork(() ->
+                match(pattern, movie) ? movie : null);
     }
 
     /**
@@ -372,7 +402,8 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return false' with
         // the proper code.
-        return false;
+        return pattern.matcher(movie.id())
+                .find();
     }
 
     /**
@@ -400,6 +431,8 @@ public class MoviesService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return FutureUtils.futures2Stream(results)
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

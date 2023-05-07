@@ -38,6 +38,7 @@ public class MoviesController {
      */
     // TODO -- ensure that 'service' is autowired with the appropriate
     // @Bean factory method.
+    @Autowired
     private MoviesService service;
 
     /**
@@ -63,6 +64,10 @@ public class MoviesController {
     // GET requests onto a handler method for "all-movies"
     // (GET_ALL_MOVIES) that takes no parameters and forwards to the
     // MoviesService.getMovies() method.
+    @GetMapping(GET_ALL_MOVIES)
+    List<Movie> getMovies() {
+        return service.getMovies();
+    }
 
     /**
      * Search for movie titles containing the given query {@link
@@ -76,6 +81,10 @@ public class MoviesController {
     // GET requests onto a handler method for "search" (GET_SEARCH)
     // that uses a @PathVariable parameter and forwards to the
     // MoviesService.search(String query) method.
+    @GetMapping(GET_SEARCH + SEARCH_QUERY)
+    List<Movie> search(@PathVariable String regexQuery) {
+        return service.search(regexQuery);
+    }
 
     /**
      * Search for movie titles containing the given {@link String}
@@ -90,4 +99,8 @@ public class MoviesController {
     // GET requests onto a handler method for "searches"
     // (GET_SEARCHES) that uses a @RequestParam parameter and forwards
     // to the MoviesService.search(List<String> queries) method.
+    @GetMapping(GET_SEARCHES)
+    List<Movie> search(@RequestParam List<String> regexQueries) {
+        return service.search(regexQueries);
+    }
 }
