@@ -4,7 +4,10 @@ import edu.vandy.recommender.utils.CallUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 import static edu.vandy.recommender.common.Constants.Service.TIMER;
+import static edu.vandy.recommender.utils.ExceptionUtils.rethrowSupplier;
 
 /**
  * This class is a proxy to the {@code Timer} microservice.
@@ -30,7 +33,9 @@ public class TimerSyncProxy {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
 
-        return null;
+        return rethrowSupplier(() ->
+            CallUtils.executeCall(mTimerAPI.getTimings(TIMER))
+        ).get();
     }
 }
 

@@ -23,6 +23,7 @@ public class ServerBeans {
      * @return A new {@link RestTemplate}.
      */
     // TODO -- you fill in here to make this a @Bean.
+    @Bean
     @Qualifier(TIMER)
     public RestTemplate getRestTemplate() {
         return new RestTemplate();

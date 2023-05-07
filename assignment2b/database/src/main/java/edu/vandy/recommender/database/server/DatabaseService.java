@@ -36,7 +36,7 @@ public class DatabaseService {
      */
     public List<Movie> getMovies() {
         // Forward to the repository.
-        return null;
+        return mRepository.findAllByOrderByIdAsc();
     }
 
     /**
@@ -50,7 +50,7 @@ public class DatabaseService {
      */
     public List<Movie> search(String query) {
         // Forward to the repository.
-        return null;
+        return mRepository.findByIdContainingIgnoreCaseOrderByIdAsc(query);
     }
 
     /**
@@ -68,7 +68,11 @@ public class DatabaseService {
         // a List of Movie objects.
 
         // TODO -- you fill in here.
-        return null;
+        return queries.parallelStream()
+                .flatMap(query -> search(query).stream())
+                .sorted()
+                .distinct()
+                .toList();
     }
 
     /**
@@ -86,6 +90,6 @@ public class DatabaseService {
         // List of Movie objects that contain no duplicates.
 
         // TODO -- you fill in here.
-        return null;
+        return mRepository.findAllByIdContainingInOrderByAsc(queries);
     }
 }

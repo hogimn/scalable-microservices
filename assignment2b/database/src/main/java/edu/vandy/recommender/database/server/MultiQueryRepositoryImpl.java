@@ -43,29 +43,34 @@ public class MultiQueryRepositoryImpl
         // create the criteria query that will be used to search for
         // movies.
         // TODO -- you fill in here.
+        CriteriaBuilder criteriaBuilder = mEntityManager.getCriteriaBuilder();
 
         // Create a new criteria query of type Movie that's used to
         // specify the search criteria for the movies.
         // TODO -- you fill in here.
+        CriteriaQuery<Movie> criteriaQuery = criteriaBuilder.createQuery(Movie.class);
 
         // Create a Root object for the Movie entity that specifies
         // the entity to query.
         // TODO -- you fill in here.
+        Root<Movie> root = criteriaQuery.from(Movie.class);
 
         // Create an Expression object that represents the lower-cased
         // ID (title) field of the Movie entity that's used to create
         // the search predicate that matches the specified queries.
         // TODO -- you fill in here.
+        Expression<String> idExpression = criteriaBuilder.lower(root.get("id"));
 
         // Call a helper method to get a Predicate that "ands" all the
         // queries together.
         // TODO -- you fill in here.
+        Predicate andPredicate = getPredicate(queries, criteriaBuilder, idExpression);
 
         // Call a helper method that performs the query and returns
         // the results.
         // TODO -- you fill in here, replacing 'return null' with
         // the proper solution.
-        return null;
+        return getQueryResults(criteriaQuery, criteriaBuilder, andPredicate, idExpression);
     }
 
     /**
@@ -89,7 +94,12 @@ public class MultiQueryRepositoryImpl
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
-        return null;
+        return queries
+                .stream()
+                .map(String::toLowerCase)
+                .map(query -> criteriaBuilder.like(
+                        idExpression, "%" + query + "%"))
+                .reduce(criteriaBuilder.conjunction(), criteriaBuilder::and);
     }
 
     /**
@@ -120,6 +130,11 @@ public class MultiQueryRepositoryImpl
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
-        return null;
+        return mEntityManager
+                .createQuery(criteriaQuery
+                        .where(andPredicate)
+                        .groupBy(idExpression)
+                        .orderBy(criteriaBuilder.asc(idExpression)))
+                .getResultList();
     }
 }

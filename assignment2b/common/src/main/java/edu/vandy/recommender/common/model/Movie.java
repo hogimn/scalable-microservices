@@ -19,6 +19,7 @@ public class Movie
 // Implement an interface that enables two Movie objects to be
 // compared and checked for equality.
 // TODO -- you fill in here
+implements Comparable<Movie>
 {
     /**
      * The movie name.
@@ -62,6 +63,10 @@ public class Movie
      * specified movie's ID (ignoring case)
      */
     // TODO -- you fill in here.
+    @Override
+    public int compareTo(Movie other) {
+        return this.id.compareToIgnoreCase(other.id);
+    }
 
     /**
      * Overrides the equals method to compare two {@link Movie}
@@ -71,9 +76,24 @@ public class Movie
      * @return true if the object ids are equal, false otherwise
      */
     // TODO -- you fill in here.
+    @Override
+    public boolean equals(Object other) {
+        if (this == other)
+            return true;
+
+        if (!(other instanceof Movie))
+            return false;
+
+        return this.id.equals(((Movie) other).id);
+    }
 
     /**
      * @return A hash of the {@link Movie} id (title)
      */
     // TODO -- you fill in here.
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

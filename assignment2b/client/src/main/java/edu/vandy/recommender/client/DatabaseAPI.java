@@ -41,6 +41,8 @@ public interface DatabaseAPI {
      *         an error message on failure
      */
     // TODO -- you fill in here.
+    @GET("{routename}" + "/" + GET_ALL_MOVIES)
+    Call<List<Movie>> getMovies(@Path("routename") String routename);
 
     /**
      * Get a {@link List} containing the requested {@link Movie}
@@ -55,6 +57,9 @@ public interface DatabaseAPI {
      *         an error message on failure
      */
     // TODO -- you fill in here.
+    @GET("{routename}" + "/" + GET_SEARCH + "/" + SEARCH_QUERY)
+    Call<List<Movie>> searchMovies(@Path("routename") String routename,
+                                   @Path("query") String query);
 
     /**
      * Search for movies containing the given {@link List} of {@code
@@ -71,6 +76,9 @@ public interface DatabaseAPI {
      *         queries} on success and an error message on failure
      */
     // TODO -- you fill in here.
+    @POST("{routename}" + "/" + POST_SEARCHES)
+    Call<List<Movie>> searchMovies(@Path("routename") String routename,
+                                   @Body List<String> queries);
 
     /**
      * Search for movies containing all given {@link List} of {@code
@@ -87,6 +95,9 @@ public interface DatabaseAPI {
      *         queries} on success and an error message on failure
      */
     // TODO -- you fill in here.
+    @POST("{routename}" + "/" + POST_SEARCHES_EX)
+    Call<List<Movie>> searchMoviesEx(@Path("routename") String routename,
+                                     @Body List<String> queries);
 
     /**
      * Get a {@link List} containing the requested movies .
@@ -102,6 +113,8 @@ public interface DatabaseAPI {
      *         an error message on failure
      */
     // TODO -- you fill in here.
+    @GET("{routename}" + "/" + TIMED + "/" + GET_ALL_MOVIES)
+    Call<List<Movie>> getMoviesTimed(@Path("routename") String routename);
 
     /**
      * Get a {@link List} containing the requested {@link Movie}
@@ -119,6 +132,9 @@ public interface DatabaseAPI {
      *         queries} on success and an error message on failure
      */
     // TODO -- you fill in here.
+    @GET("{routename}" + "/" + TIMED + "/" + GET_SEARCH + "/" + SEARCH_QUERY)
+    Call<List<Movie>> searchMoviesTimed(@Path("routename") String routename,
+                                        @Path("query") String query);
 
     /**
      * Search for movies containing any given {@link List} of {@code
@@ -139,6 +155,9 @@ public interface DatabaseAPI {
      *         failure
      */
     // TODO -- you fill in here.
+    @POST("{routename}" + "/" + TIMED + "/" + POST_SEARCHES)
+    Call<List<Movie>> searchMoviesTimed(@Path("routename") String routename,
+                                        @Body List<String> queries);
 
     /**
      * Search for movies containing all given {@link List} of {@code
@@ -159,4 +178,7 @@ public interface DatabaseAPI {
      *         failure
      */
     // TODO -- you fill in here.
+    @POST("{routename}" + "/" + TIMED + "/" + POST_SEARCHES_EX)
+    Call<List<Movie>> searchMoviesExTimed(@Path("routename") String routename,
+                                          @Body List<String> queries);
 }
