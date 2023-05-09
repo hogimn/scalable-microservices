@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
+import static edu.vandy.recommender.utils.ExceptionUtils.rethrowSupplier;
+
 /**
  * This class is a proxy to the {@code Database} microservice.
  */
@@ -36,7 +38,14 @@ public class DatabaseSyncProxy {
     List<Movie> getMovies(String route) {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.getMovies(route).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -53,7 +62,14 @@ public class DatabaseSyncProxy {
                              String query) {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMovies(route, query).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -71,7 +87,14 @@ public class DatabaseSyncProxy {
                              List<String> queries) {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMovies(route, queries).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -90,7 +113,14 @@ public class DatabaseSyncProxy {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMoviesEx(route, queries).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -110,7 +140,14 @@ public class DatabaseSyncProxy {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.getMoviesTimed(route).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -131,7 +168,14 @@ public class DatabaseSyncProxy {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMoviesTimed(route, query).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -152,7 +196,14 @@ public class DatabaseSyncProxy {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMoviesTimed(route, queries).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 
     /**
@@ -173,7 +224,14 @@ public class DatabaseSyncProxy {
         // TODO -- you fill in here by replacing 'return null' with
         // the appropriate helper method provided by CallUtils.
 
-        return null;
+        return rethrowSupplier(() -> {
+            var response = mDatabaseAPI.searchMoviesExTimed(route, queries).execute();
+            if (response.isSuccessful()) {
+                return response.body();
+            } else {
+                throw new RuntimeException("Request failed: " + response.code());
+            }
+        }).get();
     }
 }
 

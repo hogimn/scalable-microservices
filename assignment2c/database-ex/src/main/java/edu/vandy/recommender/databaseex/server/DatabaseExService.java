@@ -39,7 +39,8 @@ public class DatabaseExService {
         // Forward to the repository.
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mRepository
+                .findAll();
     }
 
     /**
@@ -55,7 +56,8 @@ public class DatabaseExService {
         // Forward to the repository.
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mRepository
+                .findByIdContainingIgnoreCaseOrderByIdAsc(query);
     }
 
     /**
@@ -72,7 +74,8 @@ public class DatabaseExService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mRepository
+                .findAllByIdContainingAnyInOrderByAsc(queries);
     }
 
     /**
@@ -89,6 +92,7 @@ public class DatabaseExService {
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return mRepository
+                .findAllByIdContainingAllInOrderByAsc(queries);
     }
 }

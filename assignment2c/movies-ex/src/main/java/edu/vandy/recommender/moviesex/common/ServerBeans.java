@@ -57,6 +57,12 @@ public class ServerBeans {
         // TODO -- You fill in here, replacing 'return null' with the
         // proper code.
 
-        return null;
+        return MovieDatasetReader
+                .loadMovieData(dataset)
+                .entrySet()
+                .stream()
+                .map(e -> new Movie(e.getKey(), e.getValue()))
+                .sorted()
+                .toList();
     }
 }

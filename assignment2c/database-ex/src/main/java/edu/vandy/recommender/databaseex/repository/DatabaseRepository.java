@@ -5,6 +5,8 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
+
 /**
  * A persistent repository that contains information about {@link
  * Movie} objects and can be queried in various ways.
@@ -28,6 +30,7 @@ public interface DatabaseRepository
          *         sorted in ascending order
          */
     // TODO -- you fill in here.
+    Flux<Movie> findByIdContainingIgnoreCaseOrderByIdAsc(String query);
 
     /**
      * @return A {@link Flux} that emits all {@link Movie} objects in
@@ -35,4 +38,5 @@ public interface DatabaseRepository
      *         title)
      */
     // TODO -- you fill in here.
+    Flux<Movie> findAllByOrderByIdAsc();
 }

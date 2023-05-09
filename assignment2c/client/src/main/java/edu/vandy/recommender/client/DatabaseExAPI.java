@@ -44,6 +44,8 @@ public interface DatabaseExAPI {
      *         success and an error message on failure
      */
     // TODO -- you fill in here.
+    @GetExchange(GET_ALL_MOVIES)
+    Flux<Movie> getMovies();
 
     /**
      * Get a {@link Flux} containing the requested {@link Movie}
@@ -54,6 +56,8 @@ public interface DatabaseExAPI {
      * success and an error message on failure
      */
     // TODO -- you fill in here.
+    @GetExchange(GET_SEARCH + "/" + SEARCH_QUERY)
+    Flux<Movie> searchMovies(@PathVariable("query") String query);
 
     /**
      * Search for movies containing the given {@link List} of {@code
@@ -67,6 +71,9 @@ public interface DatabaseExAPI {
      * message on failure
      */
     // TODO -- you fill in here.
+    @PostExchange(POST_SEARCHES)
+    Flux<Movie> searchMovies(@RequestBody List<String> queries);
+
 
     /**
      * Search for movies containing all given {@link List} of {@code
@@ -80,6 +87,8 @@ public interface DatabaseExAPI {
      * message on failure
      */
     // TODO -- you fill in here.
+    @PostExchange(POST_SEARCHES_EX)
+    Flux<Movie> searchMoviesEx(@RequestBody List<String> queries);
 
     /**
      * Get a {@link Flux} containing the requested movies .
@@ -91,6 +100,8 @@ public interface DatabaseExAPI {
      * success and an error message on failure
      */
     // TODO -- you fill in here.
+    @GetExchange(TIMED + "/" + GET_ALL_MOVIES)
+    Flux<Movie> getMoviesTimed();
 
     /**
      * Get a {@link Flux} containing the requested {@link Movie}
@@ -105,6 +116,8 @@ public interface DatabaseExAPI {
      * message on failure
      */
     // TODO -- you fill in here.
+    @GetExchange(TIMED + "/" + GET_SEARCH + "/" + SEARCH_QUERY)
+    Flux<Movie> searchMoviesTimed(@PathVariable("query") String query);
 
     /**
      * Search for movies containing any given {@link List} of {@code
@@ -121,6 +134,8 @@ public interface DatabaseExAPI {
      * message on failure
      */
     // TODO -- you fill in here.
+    @PostExchange(TIMED + "/" + POST_SEARCHES)
+    Flux<Movie> searchMoviesTimed(@RequestBody List<String> queries);
 
     /**
      * Search for movies containing all given {@link List} of {@code
@@ -137,4 +152,6 @@ public interface DatabaseExAPI {
      * message on failure
      */
     // TODO -- you fill in here.
+    @PostExchange(TIMED + "/" + POST_SEARCHES_EX)
+    Flux<Movie> searchMoviesExTimed(@RequestBody List<String> queries);
 }

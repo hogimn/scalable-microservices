@@ -46,7 +46,12 @@ public class MultiQueryRepositoryImpl
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
-        return null;
+        String sql = buildQueryString
+                ("SELECT * FROM movie WHERE LOWER(movie) LIKE :params",
+                        "%' OR LOWER(movie) LIKE '%",
+                        queries);
+
+        return getMovieFlux(sql);
     }
 
     /**
@@ -69,7 +74,12 @@ public class MultiQueryRepositoryImpl
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
-        return null;
+        String sql = buildQueryString
+                ("SELECT * FROM movie WHERE LOWER(movie) LIKE :params",
+                        "%' OR LOWER(movie) LIKE '%",
+                        queries);
+
+        return getMovieFlux(sql);
     }
 
     /**
@@ -100,7 +110,12 @@ public class MultiQueryRepositoryImpl
         // TODO -- you fill in here, replacing 'return null' with the
         // proper solution.
         // SOLUTION-START
-        return null;
+        String expandedParams = "'%" +
+                String.join(whereFilter, queries)
+                        .toLowerCase() + "%'";
+
+        return sqlString
+                .replace(":param", expandedParams);
     }
 
     /**
@@ -122,7 +137,12 @@ public class MultiQueryRepositoryImpl
         // TODO -- You fill in here, replacing 'return null' with the
         // proper solution.
 
-        return null;
+        return mDatabaseClient
+                .sql(sql)
+                .map(row ->
+                        new Movie(row.get("id", String.class),
+                        ArrayUtils.obj2List(row.get("vector"), Double.class)))
+                .all();
     }
 }
 

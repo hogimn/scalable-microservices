@@ -25,6 +25,7 @@ public interface DatabaseRepository
      *         database sorted in ascending order by Id (movie title)
      */
     // TODO -- you fill in here.
+    List<Movie> findAllByOrderByIdAsc();
 
     /**
      * Find all {@link Movie} rows in the database that
@@ -37,4 +38,5 @@ public interface DatabaseRepository
      *         order
      */
     // TODO -- you fill in here.
+    List<Movie> findByIdContainingIgnoreCaseOrderByIdAsc(String query);
 }

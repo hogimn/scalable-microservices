@@ -57,7 +57,17 @@ public class ClientBeans {
     public DatabaseExAPI getDatabaseExAPI() {
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+
+        var webClient = WebClient
+                .builder()
+                .baseUrl(GATEWAY_BASE_URL)
+                .build();
+
+        return HttpServiceProxyFactory
+                .builder(WebClientAdapter
+                        .forClient(webClient))
+                .build()
+                .createClient(DatabaseExAPI.class);
     }
 
     /**
@@ -71,7 +81,11 @@ public class ClientBeans {
     public DatabaseAPI getDatabaseAPI() {
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return new Retrofit.Builder()
+                .baseUrl(GATEWAY_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(DatabaseAPI.class);
     }
 
     /**
@@ -85,7 +99,11 @@ public class ClientBeans {
     public TimerAPI getTimerAPI() {
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return new Retrofit.Builder()
+                .baseUrl(GATEWAY_BASE_URL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build()
+                .create(TimerAPI.class);
     }
 
     /**
