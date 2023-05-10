@@ -1,6 +1,8 @@
 package edu.vandy.recommender.microservice.parallelflux;
 
 import edu.vandy.recommender.common.BaseService;
+import edu.vandy.recommender.common.Converters;
+import edu.vandy.recommender.common.CosineSimilarityUtils;
 import edu.vandy.recommender.common.model.Ranking;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -50,7 +52,8 @@ public class ParallelFluxService
 
         // TODO -- you fill in here, replacing 'return null'
         // with the proper code.
-        return null;
+        return Flux.fromIterable(
+                Converters.titles2Rankings(mMovieMap.keySet()));
     }
 
     /**
@@ -80,7 +83,13 @@ public class ParallelFluxService
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        return Flux.fromIterable(
+                Converters.titles2Rankings(mMovieMap.keySet()))
+                .parallel()
+                .runOn(Schedulers.parallel())
+                .filter(r -> r.getTitle().toLowerCase().contains(query.toLowerCase()))
+                .sequential()
+                .sort(Comparator.comparing(Ranking::getTitle));
     }
 
     /**
@@ -108,6 +117,9 @@ public class ParallelFluxService
 
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
+        if (!mMovieMap.containsKey(watchedMovie)) {
+            return Flux.empty();
+        }
 
         // Next, create a local Flux variable that is initialized via
         // the following steps:
@@ -120,14 +132,16 @@ public class ParallelFluxService
 
         // TODO -- you fill in here, replacing 'Flux<Ranking> entries
         // = null' with the proper code.
-        Flux<Ranking> entries = null;
+        Flux<Ranking> entries = computeRecommendationsParallelFlux(mMovieMap.get(watchedMovie))
+                .filter(ranking -> !ranking.getTitle().equals(watchedMovie))
+                .sequential();
 
         // Call a helper method that return the top maxCount
         // recommendations in the Flux of entries.
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return getTopRecommendationsHeap(entries, maxCount);
     }
 
     /**
@@ -150,6 +164,14 @@ public class ParallelFluxService
         // affecting the original contents of the watchedMovies List.
         // If the resulting List is empty, return an empty Flux.
         // TODO -- you fill in here.
+        List<String> validWatchedMovies = watchedMovies
+                .stream()
+                .filter(mMovieMap::containsKey)
+                .toList();
+
+        if (validWatchedMovies.isEmpty()) {
+            return Flux.empty();
+        }
 
         // Perform the following steps using a Project Reactor
         // ParallelFlux.
@@ -165,13 +187,24 @@ public class ParallelFluxService
 
         // TODO -- you fill in here, replacing 'Flux<Ranking> entries
         // = null' with the proper code.
-        Flux<Ranking> entries = null;
+        Flux<Ranking> entries = Flux.fromIterable(mMovieMap.entrySet())
+                .parallel()
+                .runOn(Schedulers.parallel())
+                .filter(e -> !validWatchedMovies.contains(e.getKey()))
+                .map(e -> new Ranking(
+                        e.getKey(),
+                        CosineSimilarityUtils.sumOfCosines(
+                                e.getValue(),
+                                validWatchedMovies,
+                                mMovieMap,
+                                true)))
+                .sequential();
 
         // Call a helper method to get/return the top maxCount
         // recommendations.
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return getTopRecommendationsSort(entries, maxCount);
     }
 
     /**
@@ -198,6 +231,14 @@ public class ParallelFluxService
 
         // TODO -- you fill in here, replacing 'return null' with the
         // proper code.
-        return null;
+        return Flux.fromIterable(mMovieMap.entrySet())
+                .parallel()
+                .runOn(Schedulers.parallel())
+                .map(movie -> new Ranking(
+                        movie.getKey(),
+                        CosineSimilarityUtils.cosineSimilarity(
+                                movie.getValue(),
+                                vector,
+                                true)));
     }
 }

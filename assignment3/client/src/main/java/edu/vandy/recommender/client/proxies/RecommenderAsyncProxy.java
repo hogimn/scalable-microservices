@@ -38,7 +38,12 @@ public class RecommenderAsyncProxy {
                                    boolean timed) {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        if (strategy.equals(PARALLEL_FLUX)) {
+            return timed?
+                    mParallelFluxAPI.getMoviesTimed() :
+                    mParallelFluxAPI.getMovies();
+        }
+        throw new IllegalArgumentException();
     }
 
     /**
@@ -59,7 +64,12 @@ public class RecommenderAsyncProxy {
                                 boolean timed) {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        if (strategy.equals(PARALLEL_FLUX)) {
+            return timed?
+                    mParallelFluxAPI.searchMoviesTimed(query) :
+                    mParallelFluxAPI.searchMovies(query);
+        }
+        throw new IllegalArgumentException();
     }
 
     /**
@@ -84,7 +94,12 @@ public class RecommenderAsyncProxy {
                                             boolean timed) {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        if (strategy.equals(PARALLEL_FLUX)) {
+            return timed?
+                    mParallelFluxAPI.recommendationsTimed(watchedMovie, maxCount) :
+                    mParallelFluxAPI.recommendations(watchedMovie, maxCount);
+        }
+        throw new IllegalArgumentException();
     }
 
     /**
@@ -108,7 +123,12 @@ public class RecommenderAsyncProxy {
                                             boolean timed) {
         // TODO -- you fill in here, replacing 'return null' with
         // the proper code.
-        return null;
+        if (strategy.equals(PARALLEL_FLUX)) {
+            return timed?
+                    mParallelFluxAPI.recommendationsTimed(watchedMovies, maxCount) :
+                    mParallelFluxAPI.recommendations(watchedMovies, maxCount);
+        }
+        throw new IllegalArgumentException();
     }
 }
 

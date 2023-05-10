@@ -38,4 +38,6 @@ public interface TimerAPI {
      *         and an error message on failure
      */
     // TODO -- you fill in here.
+    @GET("{routename}" + "/" + GET_TIMINGS)
+    Call<String> getTimings(@Path("routename") String routename);
 }

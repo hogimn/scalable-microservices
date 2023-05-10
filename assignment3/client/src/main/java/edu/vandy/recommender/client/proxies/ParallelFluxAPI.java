@@ -43,6 +43,8 @@ public interface ParallelFluxAPI {
      * @return An {@link Flux} that emits {@link Ranking} objects
      */
     // TODO -- you fill in here.
+    @GetExchange(GET_ALL_MOVIES)
+    Flux<Ranking> getMovies();
 
     /**
      * Get a {@link Flux} containing the requested {@link Ranking}
@@ -53,6 +55,8 @@ public interface ParallelFluxAPI {
      *         success
      */
     // TODO -- you fill in here.
+    @GetExchange(GET_SEARCH + "/" + SEARCH_QUERY)
+    Flux<Ranking> searchMovies(@PathVariable String query);
 
     /**
      * Recommend {@code maxCount} movies from our movie database as a
@@ -69,6 +73,9 @@ public interface ParallelFluxAPI {
      *         watchedMovie}
      */
     // TODO -- you fill in here.
+    @GetExchange(GET_RECOMMENDATIONS)
+    Flux<Ranking> recommendations(@RequestParam String watchedMovie,
+                                  @RequestParam int maxCount);
 
     /**
      * Recommend the {@code maxCount} movies from our database as a
@@ -84,6 +91,9 @@ public interface ParallelFluxAPI {
      *         watchedMovies}
      */
     // TODO -- you fill in here.
+    @PostExchange(POST_RECOMMENDATIONS)
+    Flux<Ranking> recommendations(@RequestBody List<String> watchedMovies,
+                                  @RequestParam int maxCount);
 
     /**
      * Get a {@link Flux} containing the requested movies .
@@ -95,6 +105,8 @@ public interface ParallelFluxAPI {
      *         success
      */
     // TODO -- you fill in here.
+    @GetExchange(TIMED + "/" + GET_ALL_MOVIES)
+    Flux<Ranking> getMoviesTimed();
 
     /**
      * Get a {@link Flux} containing the requested {@link Movie}
@@ -108,6 +120,8 @@ public interface ParallelFluxAPI {
      *         match any {@code queries} on success
      */
     // TODO -- you fill in here.
+    @GetExchange(TIMED + "/" + GET_SEARCH + "/" + SEARCH_QUERY)
+    Flux<Ranking> searchMoviesTimed(@PathVariable String query);
 
     /**
      * Recommend {@code maxCount} movies from our movie database as a
@@ -127,6 +141,9 @@ public interface ParallelFluxAPI {
      *         watchedMovie}
      */
     // TODO -- you fill in here.
+    @GetExchange(TIMED + "/" + GET_RECOMMENDATIONS)
+    Flux<Ranking> recommendationsTimed(@RequestParam String watchedMovie,
+                                       @RequestParam int maxCount);
 
     /**
      * Recommend the {@code maxCount} movies from our database as a
@@ -145,4 +162,7 @@ public interface ParallelFluxAPI {
      *         watchedMovies}
      */
     // TODO -- you fill in here.
+    @PostExchange(TIMED + "/" + POST_RECOMMENDATIONS)
+    Flux<Ranking> recommendationsTimed(@RequestBody List<String> watchedMovies,
+                                       @RequestParam int maxCount);
 }
